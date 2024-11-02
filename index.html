@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Pendaftaran</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.7.2/font/bootstrap-icons.min.css" rel="stylesheet">
+    <style>
+        .form-container {
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        
+        .password-rules {
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+
+        .password-toggle {
+            cursor: pointer;
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .password-container {
+            position: relative;
+        }
+
+        #successAlert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1050;
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <!-- Alert Sukses -->
+    <div class="alert alert-success alert-dismissible fade" id="successAlert" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i>
+        <strong>Selamat!</strong> Akun Anda berhasil dibuat. Silakan login untuk melanjutkan.
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div class="container">
+        <div class="form-container bg-white">
+            <h2 class="text-center mb-4">Form Pendaftaran</h2>
+            
+            <form class="needs-validation" novalidate>
+                <!-- Nama -->
+                <div class="mb-3">
+                    <label for="nama" class="form-label">Nama Lengkap</label>
+                    <input type="text" class="form-control" id="nama" 
+                           required minlength="3"
+                           pattern="[A-Za-z ]{3,50}">
+                    <div class="invalid-feedback">
+                        Nama harus diisi minimal 3 karakter (hanya huruf)
+                    </div>
+                </div>
+
+                <!-- Email -->
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" 
+                           required>
+                    <div class="invalid-feedback">
+                        Masukkan alamat email yang valid
+                    </div>
+                </div>
+
+                <!-- Password -->
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <div class="password-container">
+                        <input type="password" class="form-control" id="password"
+                               required minlength="8"
+                               pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$">
+                        <i class="bi bi-eye-slash password-toggle" id="togglePassword"></i>
+                    </div>
+                    <div class="password-rules mt-1">
+                        Password harus memiliki:
+                        <ul>
+                            <li>Minimal 8 karakter</li>
+                            <li>Minimal 1 huruf besar</li>
+                            <li>Minimal 1 huruf kecil</li>
+                            <li>Minimal 1 angka</li>
+                        </ul>
+                    </div>
+                    <div class="invalid-feedback">
+                        Password tidak memenuhi persyaratan
+                    </div>
+                </div>
+
+                <!-- Konfirmasi Password -->
+                <div class="mb-4">
+                    <label for="konfirmasi" class="form-label">Konfirmasi Password</label>
+                    <div class="password-container">
+                        <input type="password" class="form-control" id="konfirmasi"
+                               required>
+                        <i class="bi bi-eye-slash password-toggle" id="toggleKonfirmasi"></i>
+                    </div>
+                    <div class="invalid-feedback">
+                        Password tidak cocok
+                    </div>
+                </div>
+
+                <!-- Checkbox Terms -->
+                <div class="mb-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="terms" required>
+                        <label class="form-check-label" for="terms">
+                            Saya setuju dengan syarat dan ketentuan
+                        </label>
+                        <div class="invalid-feedback">
+                            Anda harus menyetujui syarat dan ketentuan
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="d-grid">
+                    <button class="btn btn-primary" type="submit">Daftar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Validation Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.querySelector('.needs-validation');
+            const password = document.getElementById('password');
+            const konfirmasi = document.getElementById('konfirmasi');
+            const togglePassword = document.getElementById('togglePassword');
+            const toggleKonfirmasi = document.getElementById('toggleKonfirmasi');
+            const successAlert = document.getElementById('successAlert');
+
+            // Toggle Password Visibility
+            togglePassword.addEventListener('click', function() {
+                const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+                password.setAttribute('type', type);
+                this.classList.toggle('bi-eye');
+                this.classList.toggle('bi-eye-slash');
+            });
+
+            // Toggle Konfirmasi Password Visibility
+            toggleKonfirmasi.addEventListener('click', function() {
+                const type = konfirmasi.getAttribute('type') === 'password' ? 'text' : 'password';
+                konfirmasi.setAttribute('type', type);
+                this.classList.toggle('bi-eye');
+                this.classList.toggle('bi-eye-slash');
+            });
+
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+                event.stopPropagation();
+
+                // Password match validation
+                if (password.value !== konfirmasi.value) {
+                    konfirmasi.setCustomValidity('Passwords tidak cocok');
+                } else {
+                    konfirmasi.setCustomValidity('');
+                }
+
+                form.classList.add('was-validated');
+
+                // If form is valid, show success message
+                if (form.checkValidity()) {
+                    // Show success alert
+                    successAlert.classList.add('show');
+                    successAlert.style.display = 'block';
+
+                    // Reset form
+                    form.reset();
+                    form.classList.remove('was-validated');
+
+                    // Hide alert after 5 seconds
+                    setTimeout(function() {
+                        successAlert.classList.remove('show');
+                        setTimeout(function() {
+                            successAlert.style.display = 'none';
+                        }, 150);
+                    }, 5000);
+                }
+            });
+
+            // Real-time password match validation
+            konfirmasi.addEventListener('input', function() {
+                if (password.value !== konfirmasi.value) {
+                    konfirmasi.setCustomValidity('Passwords tidak cocok');
+                } else {
+                    konfirmasi.setCustomValidity('');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
